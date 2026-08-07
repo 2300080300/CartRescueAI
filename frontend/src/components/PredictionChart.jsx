@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
+import { Chart as ChartJS, registerables } from "chart.js";
 
-Chart.register(ArcElement, Tooltip, Legend);
+ChartJS.register(...registerables);
 
 export default function PredictionChart({ prediction }) {
   const canvasRef = useRef(null);
@@ -9,6 +9,7 @@ export default function PredictionChart({ prediction }) {
 
   useEffect(() => {
     if (!canvasRef.current) return;
+
     const context = canvasRef.current.getContext("2d");
 
     if (chartRef.current) {
@@ -16,7 +17,8 @@ export default function PredictionChart({ prediction }) {
     }
 
     const score = prediction ? prediction.abandonment_probability : 0;
-    chartRef.current = new Chart(context, {
+
+    chartRef.current = new ChartJS(context, {
       type: "doughnut",
       data: {
         labels: ["Abandonment", "Retention"],
@@ -30,6 +32,7 @@ export default function PredictionChart({ prediction }) {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             labels: {
@@ -41,15 +44,27 @@ export default function PredictionChart({ prediction }) {
     });
 
     return () => {
-      chartRef.current?.destroy();
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
     };
   }, [prediction]);
 
   return (
-    <div className="mt-6 rounded-3xl bg-slate-950/80 p-6 text-center">
-      <p className="text-sm uppercase tracking-[0.3em] text-slate-400">Current score</p>
-      <canvas ref={canvasRef} className="mt-6" />
-      {!prediction && <p className="mt-4 text-slate-400">Submit a cart scenario to view the score.</p>}
+    <div className="mt-6">
+      <h3 className="mb-4 text-lg font-semibold text-white">
+        Current Score
+      </h3>
+
+      {!prediction && (
+        <p className="mb-4 text-slate-400">
+          Submit a cart scenario to view the score.
+        </p>
+      )}
+
+      <div style={{ height: "300px" }}>
+        <canvas ref={canvasRef}></canvas>
+      </div>
     </div>
   );
 }

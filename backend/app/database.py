@@ -1,13 +1,15 @@
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+load_dotenv()
+DATABASE_URL = "sqlite:///./cart_rescue_ai.db"
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql+psycopg://cart_user:cart_password@localhost:5432/cart_rescue_ai",
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False}
 )
 
-engine = create_engine(DATABASE_URL, future=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, future=True)
 Base = declarative_base()
 
