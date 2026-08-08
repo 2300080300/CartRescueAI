@@ -6,10 +6,12 @@ from .database import engine, Base, SessionLocal
 from .routers.prediction import router as prediction_router
 from .routers.shopping import router as shopping_router
 from . import crud
+from .services.ml_model import load_model
 
 load_dotenv()
 
 Base.metadata.create_all(bind=engine)
+load_model()
 with SessionLocal() as seed_db:
     crud.seed_products(seed_db)
 

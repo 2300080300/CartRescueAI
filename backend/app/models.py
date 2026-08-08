@@ -52,3 +52,7 @@ class Prediction(Base):
     recommendation = Column(String(500), nullable=False)
     timestamp = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     session = relationship("CustomerSession", back_populates="prediction")
+
+    @property
+    def cart_value(self):
+        return self.session.cart_value if self.session else 0

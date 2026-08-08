@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ..schemas import CartPredictionRequest, CartPredictionResponse
-from ..services.ml_model import train_sample_model, predict_abandonment, recommendation_for_probability
+from ..services.ml_model import load_model, predict_abandonment, recommendation_for_probability
 from ..crud import commit_session_and_prediction, create_cart_event
 from ..database import get_db
 
 router = APIRouter()
-model = train_sample_model()
+model = load_model()
 
 
 @router.post("/predict", response_model=CartPredictionResponse)

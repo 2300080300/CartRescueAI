@@ -27,6 +27,15 @@ class ProductResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class ProductDetailResponse(ProductResponse):
+    description: str
+    specifications: dict[str, str]
+    images: list[str]
+    delivery_estimate: str
+    original_price: float
+    discount: str
+
+
 class SessionCreate(CartPredictionRequest):
     pass
 
@@ -38,6 +47,7 @@ class PredictionResponse(BaseModel):
     risk_level: str
     recommendation: str
     timestamp: datetime
+    cart_value: float = 0
 
     model_config = ConfigDict(from_attributes=True)
 
